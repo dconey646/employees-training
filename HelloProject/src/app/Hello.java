@@ -1,44 +1,57 @@
 package app;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import employee_stuff.Employee;
 
 public class Hello {
 
 	public static void main(String[] args) {
-		try {
-			Connection connection = DbConnector.getInstance();
-			System.out.println("It worked! Woop!!!");
-			Statement st = connection.createStatement();
-			ResultSet rs = st.executeQuery("SELECT number,salary,name,bonus,pay FROM employee"); 
-			Employee employee;
-			List<Employee> employeesList = new ArrayList();
-			while(rs.next()){
-				employee = new Employee();
-				employee.setNumber(rs.getInt("number"));
-				employee.setName(rs.getString("name"));
-				employee.setSalary(rs.getFloat("salary"));
-				employee.setBonus(rs.getFloat("bonus"));
-				employee.setPay(rs.getFloat("pay"));
-			
-				employeesList.add(employee);
-			}
 		
-			for(Employee emp : employeesList){
-				System.out.println("Number: " + emp.getNumber());
-				System.out.println("Name: " + emp.getName());
-				System.out.println("Salary: £" + emp.getSalary());
-				System.out.println("bonus: £" + emp.getBonus());
-				System.out.println("Pay: " + emp.getPay());
+		QueryExecutor queryExecutor = new QueryExecutor();
+		
+		System.out.print("Please select an option \n1. List all employees. \n2. Employee search.");
+		Scanner scanner = new Scanner(System.in);
+		
+		int initialOption = validateInput(scanner.next());
+		
+		if(initialOption == 1) {
+			List<Employee> employees = queryExecutor.selectAllEmployees();
+			
+			for(Employee employee : employees) {
+				printEmployee(employee);
 			}
-		} catch(Exception e){
-			System.out.println("Problem executing query");
+		} else if (initialOption == 2) {
+			System.out.println("Please enter the ID of the employee.");
+			int employeeId = validateInput(scanner.next());
+			
+			Employee employee = queryExecutor.getEmployeeById(employeeId);
+			printEmployee(employee);
 		}
+		
+		scanner.close();
+	}
+	
+	private static void printEmployee(Employee employee) {
+		System.out.println("Number: " + employee.getNumber());
+		System.out.println("Name: " + employee.getName());
+		System.out.println("Salary: " + employee.getSalary());
+		System.out.println("Bonus: " + employee.getBonus());
+	}
+	
+	private static int validateInput(String input) {
+		
+		int out;
+		
+		try {
+			out = Integer.parseInt(input);
+			return out;
+		} catch(Exception e) {
+			System.err.println("Invalid option selected!");
+			System.exit(1);
+		}
+		
+		return 0;
 	}
 }
