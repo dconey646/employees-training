@@ -43,32 +43,36 @@ public class Hello {
 		Scanner scanner = new Scanner(System.in);
 
 		int initialOption = validateInput(scanner.next());
+		scanner.nextLine();
 		while(initialOption != 0){
 			switch(initialOption){
-			case 1: List<Employee> employees = queryExecutor.selectAllEmployees();
-					for (Employee employee : employees) {
-						printEmployee(employee);
-					}
-					break;
-			case 2: System.out.println("Please enter the ID of the employee.");
-					int employeeId = validateInput(scanner.next());
-					Employee employee = queryExecutor.getEmployeeById(employeeId);
-					printEmployee(employee);
-					break;
-			case 3: break;
-			default:System.out.println("Please enter a valid option");
-					scanner.nextLine();
-				try {
-					Runtime.getRuntime().exec("clear");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-					System.out.print("Please select an option \n1. List all employees. \n2. Employee search.\n3. Add new Employee.");
-					Scanner scanner1 = new Scanner(System.in);
+				case 1: List<Employee> employees = queryExecutor.selectAllEmployees();
+						for (Employee employee : employees) {
+							printEmployee(employee);
+						}
+						break;
+				case 2: System.out.println("Please enter the ID of the employee.");
+						int employeeId = validateInput(scanner.next());
+						Employee employee = queryExecutor.getEmployeeById(employeeId);
+						if(employee != null){
+							printEmployee(employee);
+						} else {
+							System.out.println("Sorry, there was no employee matching your search criteria. Please try again.");
+						}
+						break;
+				case 3:	break;
+				default:System.out.println("Please enter a valid option. Press the return key to continue.");
+						scanner.nextLine();
+						try {
+							Runtime.getRuntime().exec("clear");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+			}
+			System.out.print("Please select an option \n1. List all employees. \n2. Employee search.\n3. Add new Employee.");
+			Scanner scanner1 = new Scanner(System.in);
 
-					initialOption = validateInput(scanner1.next());
+			initialOption = validateInput(scanner1.next());
 		}
-	}
 	}
 }
